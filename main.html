@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Care Dashboard</title>
+    <link rel="stylesheet" href="main.css">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="plant-image">
+            <img src="https://media.istockphoto.com/id/1344575815/photo/anonymous-caucasian-woman-holding-a-potted-plant-covering-her-face.webp?b=1&s=170667a&w=0&k=20&c=0xUoPF1pp6sG59zMIA9k6vztZabsEbzqp-Z3fp4y5AM=" alt="Plant Image">
+        </div>
+        <h1 id="user_greeting">Hi! </h1>
+
+        <div class="toggle-controls">
+            <div class="toggle-item">
+                <label for="mineral1">Mineral 1:</label>
+                <input type="checkbox" id="mineral1" class="toggle-switch">
+                <span id="value1">0</span>
+            </div>
+
+            <div class="toggle-item">
+                <label for="mineral2">Mineral 2:</label>
+                <input type="checkbox" id="mineral2" class="toggle-switch" checked>
+                <span id="value2">1</span>
+            </div>
+
+            <div class="toggle-item">
+                <label for="mineral3">Mineral 3:</label>
+                <input type="checkbox" id="mineral3" class="toggle-switch" checked>
+                <span id="value3">1</span>
+            </div>
+        </div>
+
+        <div class="sensor-outputs">
+            <!-- Sensor outputs will be dynamically added here -->
+        </div>
+    </div>
+
+    <script type="module" src="main.js" defer></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+</body>
+</html>
