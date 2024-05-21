@@ -78,7 +78,7 @@ onAuthStateChanged(auth, (user) => {
       });
 
       // Initial value setting
-      const initialValue = mineral.checkbox.checked ? '1' : '0';
+      const initialValue = mineral.checkbox.checked ? true : false;
       mineral.value.textContent = initialValue;
       // Set initial value in Firebase
       set(ref(db, mineral.dbPath), initialValue)
