@@ -1,10 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-
-import { getDatabase, set, get, ref } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,74 +16,88 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Firebase Auth
 const auth = getAuth();
 const db = getDatabase();
-let name_changed = document.getElementById("user_greeting");
+let nameChanged = document.getElementById("user_greeting");
 
 onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/auth.user
-      const uid = user.uid;
-     // alert("you are signe in");
+  if (user) {
+    const uid = user.uid;
+    const userRef = ref(db, 'users/' + uid + "/name");
 
-     const userRef = ref(db, 'users/'+uid+"/name");
-  
-   get(userRef).then((snapshot)=>{
-    name_changed.innerHTML = "Hi!"+ snapshot.val();
-   })
+    get(userRef).then((snapshot) => {
+      nameChanged.innerHTML = "Hi! " + snapshot.val();
+    }).catch((error) => {
+      console.error("Error fetching user name:", error);
+    });
+  }
+});
 
-      // ...
-    } else {
-      // User is signed out
-      // ...
+document.addEventListener('DOMContentLoaded', function() {
+  const minerals = [
+    {
+      checkbox: document.getElementById('mineral1'),
+      value: document.getElementById('value1'),
+      dbPath: 'controls/valve_one'
+    },
+    {
+      checkbox: document.getElementById('mineral2'),
+      value: document.getElementById('value2'),
+      dbPath: 'controls/valve_two'
+    },
+    {
+      checkbox: document.getElementById('mineral3'),
+      value: document.getElementById('value3'),
+      dbPath: 'controls/valve_three'
     }
-  });
+  ];
 
-  document.addEventListener('DOMContentLoaded', function() {
-    const minerals = [
-        {
-            checkbox: document.getElementById('mineral1'), 
-            value: document.getElementById('value1'), 
-            dbPath: 'controls/valve_one'
-        },
-        {
-            checkbox: document.getElementById('mineral2'), 
-            value: document.getElementById('value2'), 
-            dbPath: 'controls/valve_two'
-        },
-        {
-            checkbox: document.getElementById('mineral3'), 
-            value: document.getElementById('value3'), 
-            dbPath: 'controls/valve_three'
-        }
-    ];
-    minerals.forEach(function(mineral) {
-      mineral.checkbox.addEventListener('change', function() {
-          const value = this.checked ? true : false;
-          mineral.value.textContent = value;
-          // Update Firebase Realtime Database
-          set(ref(db, mineral.dbPath), value)
-              .then(() => {
-                  console.log(`Successfully updated ${mineral.dbPath} to ${value}`);
-              })
-              .catch((error) => {
-                  console.error(`Error updating ${mineral.dbPath}:`, error);
-              });
+  minerals.forEach(function(mineral) {
+    mineral.checkbox.addEventListener('change', function() {
+      const value = this.checked ? true : false;
+      mineral.value.textContent = value;
+      set(ref(db, mineral.dbPath), value)
+        .then(() => {
+          console.log(`Successfully updated ${mineral.dbPath} to ${value}`);
+        })
+        .catch((error) => {
+          console.error(`Error updating ${mineral.dbPath}:`, error);
+        });
+    });
+
+    const initialValue = mineral.checkbox.checked ? true : false;
+    mineral.value.textContent = initialValue;
+    set(ref(db, mineral.dbPath), initialValue)
+      .then(() => {
+        console.log(`Successfully set ${mineral.dbPath} to ${initialValue}`);
+      })
+      .catch((error) => {
+        console.error(`Error setting ${mineral.dbPath}:`, error);
       });
-
-      // Initial value setting
-      const initialValue = mineral.checkbox.checked ? true : false;
-      mineral.value.textContent = initialValue;
-      // Set initial value in Firebase
-      set(ref(db, mineral.dbPath), initialValue)
-          .then(() => {
-              console.log(`Successfully set ${mineral.dbPath} to ${initialValue}`);
-          })
-          .catch((error) => {
-              console.error(`Error setting ${mineral.dbPath}:`, error);
-          });
   });
+
+  // Function to read sensor values from Firebase
+  function readSensorValues() {
+    const sensorRef = ref(db, 'Sensor');
+    onValue(sensorRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        console.log("Sensor data:", data);
+        document.getElementById('humidity').innerText = data.Humidity;
+        document.getElementById('soilMoisture').innerText = data.SoilMoisture;
+        document.getElementById('solarCurrent').innerText = data['Solar Current'];
+        document.getElementById('temperature').innerText = data.Temperature;
+        document.getElementById('ldrData').innerText = data.ldr_data;
+        document.getElementById('solarPower').innerText = data.solarPower;
+        document.getElementById('solarVoltage').innerText = data.solarVoltage;
+      } else {
+        console.log("No sensor data available");
+      }
+    }, (error) => {
+      console.error("Error reading sensor data:", error);
+    });
+  }
+
+  // Call the function to read sensor values
+  readSensorValues();
 });
