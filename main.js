@@ -49,6 +49,12 @@ document.addEventListener('DOMContentLoaded', function() {
       checkbox: document.getElementById('mineral3'),
       value: document.getElementById('value3'),
       dbPath: 'controls/valve_three'
+    },
+
+    {
+      checkbox: document.getElementById('water'),
+      value: document.getElementById('water'),
+      dbPath: 'controls/water_valve'
     }
   ];
 
