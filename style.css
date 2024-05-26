@@ -6,7 +6,7 @@
 
 body {
     /* background: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d') no-repeat center center fixed; */
-    background: url('https://unsplash.com/photos/green-leafed-trees-2Y4dE8sdhlc') no-repeat center center fixed;
+    background: url('login_image.jpeg') no-repeat center center fixed;
     background-size: cover;
     font-family: 'Arial', sans-serif;
     color: #fff;
@@ -26,9 +26,10 @@ a {
 }
 
 .login-form {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(196, 251, 166, 0.801);
     color: #333;
     border-radius: 10px;
+    
     margin-top: 2rem;
 }
 
